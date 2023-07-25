@@ -45,7 +45,6 @@ namespace AnimalShelter.Models
         public static void Create(string name, string description, string type) {
             Animal animal = new Animal(name, description, type);
             string commandText = $"INSERT INTO Animals (name, description, type, dateOfAdmittance) VALUES ('{animal.Name}', '{animal.Description}', '{animal.Type}', '{animal.DateOfAdmittance.ToString("yyyy'-'MM'-'dd' 'HH'-'mm'-'ss")}');";
-            Console.WriteLine(commandText);
             Animal.ExecuteNonQueryDatabaseRequest(commandText);
         }
 
@@ -65,10 +64,10 @@ namespace AnimalShelter.Models
             MySqlDataReader rdr = cmd.ExecuteReader() as MySqlDataReader;
             while (rdr.Read()) {
                 int id = rdr.GetInt32(0);
-                string name = rdr.GetString(1);
-                string description = rdr.GetString(2);
+                string name = rdr.GetFieldValue<string>(1);
+                string description = rdr.GetString("description");
                 string type = rdr.GetString(3);
-                DateTime date = rdr.GetDateTime(4);
+                DateTime date = rdr.GetFieldValue<DateTime>(4);
                 Animal animal = new Animal(name, description, type, date, id);
                 animals.Add(animal);
             }

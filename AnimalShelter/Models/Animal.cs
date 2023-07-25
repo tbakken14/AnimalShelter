@@ -1,7 +1,11 @@
-using System.Runtime;
+using System;
+using System.Collections.Generic;
+using MySqlConnector;
 
-namespace AnimalShelter.Models {
-    public class Animal {
+namespace AnimalShelter.Models 
+{
+    public class Animal 
+    {
         public DateTime DateOfAdmittance { get; set; }
         public string Name { get; set; }
         public string Type { get; set; }
@@ -37,5 +41,62 @@ namespace AnimalShelter.Models {
             DateOfAdmittance = dateOfAdmittance;
             Id = id;
         }
+
+        public static void Create(string name, string description, string type) {
+            Animal animal = new Animal(name, description, type);
+            string commandText = $"INSERT INTO Animals (name, description, type, dateOfAdmittance) VALUES ('{animal.Name}', '{animal.Description}', '{animal.Type}', '{animal.DateOfAdmittance.ToString("yyyy'-'MM'-'dd' 'HH'-'mm'-'ss")}');";
+            Console.WriteLine(commandText);
+            Animal.ExecuteNonQueryDatabaseRequest(commandText);
+        }
+
+        public static void Delete(int id) {
+            string commandText = $"DELETE FROM Animals WHERE id = {id};";
+            Animal.ExecuteNonQueryDatabaseRequest(commandText);
+        }
+
+        public static List<Animal> GetAll() {
+            List<Animal> animals = new List<Animal>();
+            MySqlConnection conn = new MySqlConnection(DBConfiguration.ConnectionString);
+            conn.Open();
+
+            MySqlCommand cmd = conn.CreateCommand() as MySqlCommand;
+            cmd.CommandText = $"SELECT * FROM Animals;";
+
+            MySqlDataReader rdr = cmd.ExecuteReader() as MySqlDataReader;
+            while (rdr.Read()) {
+                int id = rdr.GetInt32(0);
+                string name = rdr.GetString(1);
+                string description = rdr.GetString(2);
+                string type = rdr.GetString(3);
+                DateTime date = rdr.GetDateTime(4);
+                Animal animal = new Animal(name, description, type, date, id);
+                animals.Add(animal);
+            }
+            conn.Close();
+            if (conn != null)
+            {
+                conn.Dispose();
+            }
+            return animals;
+        }
+
+        private static void ExecuteNonQueryDatabaseRequest(string commandText) {
+            MySqlConnection conn = new MySqlConnection(DBConfiguration.ConnectionString);
+            conn.Open();
+
+            MySqlCommand cmd = conn.CreateCommand() as MySqlCommand;
+            cmd.CommandText = commandText;
+
+            cmd.ExecuteNonQuery();
+
+            conn.Close();
+            if (conn != null)
+            {
+                conn.Dispose();
+            }
+        }
     }
 }
+
+
+

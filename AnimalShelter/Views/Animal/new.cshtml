@@ -15,7 +15,14 @@
 
 <body>
     <h1>Animal Shelter</h1>
-    <form action="/Animals" method="get">
-        <button type="submit">View Animals</button>
+    <h2>Add a new Animal: </h2>
+    <form action="/Animals/New" method="post">
+        <label for="name">Name: </label>
+        <input id="name" name="name" type="text" required>
+        <label for="description">Description: </label>
+        <input id="description" name="description" type="text" required>
+        <label for="type">Type: </label>
+        <input id="type" name="type" type="text" required>
+        <button type="submit">Add Animal</button>
     </form>
 </body>

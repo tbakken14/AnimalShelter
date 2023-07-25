@@ -15,7 +15,11 @@
 
 <body>
     <h1>Animal Shelter</h1>
-    <form action="/Animals" method="get">
-        <button type="submit">View Animals</button>
+    @using AnimalShelter.Models
+    @foreach (Animal animal in @Model.animals) {
+        <p>@animal.Name</p>
+    }
+    <form action="/Animals/New" method="get">
+        <button type="submit">Add a new Animal</button>
     </form>
 </body>

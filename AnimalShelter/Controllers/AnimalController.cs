@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using AnimalShelter.Models;
@@ -14,7 +15,7 @@ public class AnimalController : Controller
     [HttpPost("/Animals/Delete")]
     public ActionResult Delete(int id)
     {
-        Animal.Clear(int id);
+        Animal.Delete(id);
         return RedirectToAction("Index");
     }
 
@@ -27,8 +28,8 @@ public class AnimalController : Controller
     [HttpPost("Animals/New")]
     public ActionResult New(string name, string type, string description)
     {
-        Animal.Create(name, type, desciption);
-        return RedirectToAction("Index", "Home");
+        Animal.Create(name, description, type);
+        return RedirectToAction("Index");
     }
 }
 
